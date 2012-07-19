@@ -1,3 +1,5 @@
+.idea
+.DS_Store
 bem-bl
 pages/*/*.css
 pages/*/*.js
@@ -5,3 +7,4 @@ pages/*/*.js
 pages/*/*.html
 node_modules
 .idea
+www
