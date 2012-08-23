@@ -2,12 +2,14 @@ OPTIMIZED=$(foreach F,$1,$(dir $F)_$(notdir $F).$2)
 
 BDECL := $(wildcard pages/*/*.bemdecl.js)
 SERV := $(patsubst %.bemdecl.js,%.serve.js,$(BDECL))
+HTML := $(patsubst %.bemjson.js,%.html,$(wildcard pages/*/*.bemjson.js))
 #PREFIXES := $(patsubst %.bemdecl.js,%,$(BDECL))
 JS_O = $(call OPTIMIZED,$(PREFIXES),js)
 CSS_O = $(call OPTIMIZED,$(PREFIXES),css)
 
 all:: bem-bl
-all:: $(SERV) $(JS_O) $(CSS_O)
+all:: $(SERV)
+all:: $(HTML) $(JS_O) $(CSS_O)
 
 CSSO_PATH=./node_modules/csso/bin/csso
 UGLIFYJS_PATH=./node_modules/uglify-js/bin/uglifyjs
@@ -29,10 +31,11 @@ BEM_CREATE=$(BEM) create block \
 		-T $1 \
 		--force \
 		$(*F)
-
-%.html: %.bemhtml.js %.css %.js %.bemhtml.js %.priv.js
+		
+.PRECIOUS: %.html
+%.html: %.bemhtml.js %.css %.js
 	$(call BEM_CREATE,bem-bl/blocks-common/i-bem/bem/techs/html.js)
-
+	
 .PRECIOUS: %.serve.js
 %.serve.js: %.deps.js %.plate.js
 	$(call BEM_BUILD,bem/techs/serve.js)
@@ -47,6 +50,9 @@ BEM_CREATE=$(BEM) create block \
 
 %.deps.js: %.bemdecl.js
 	$(call BEM_BUILD,deps.js)
+	
+%.bemdecl.js: %.bemjson.js
+	$(call BEM_CREATE,bemdecl.js)
 
 .PRECIOUS: %.css
 %.css: %.deps.js
