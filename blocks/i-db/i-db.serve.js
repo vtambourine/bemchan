@@ -1,44 +1,106 @@
-module.exports = function(serves) {
+var db = require('mongojs').connect('bemchan', ['comments, indexes']),
+    indxs = db.collection('indexes'),
+    cmnts = db.collection('comments');
 
-    var db = require('mongojs').connect('bemchan', ['comments']);
+module.exports = {
 
-    serves['i-db'] = {
+    /*
+    * Создает пост
+    * @param comment Текст поста
+    * @param parents ID поста(-ов), на которые создаваемый пост является ответом
+    */
+    postComment : function(comment, parents, callback) {
 
-        getBoard: function(id, callback) {
+        // Получить ссылки на обЪекты-посты-родители
 
-            var board = [];
+        // Увеличить счетчик постов
 
-            db.comments.find(null, function(err, comments) {
-                if (err) { console.log('==! i-db error: no comments') };
-                comments.forEach(function(comment) {
-                    board.push(comment)
-                });
-                callback(board);
-            }).sort({date: -1});
+        // Создать новый пост в коллекции
 
-        },
+    },
 
-        getComment: function(id, callback) {
+    /*
+    * Получает пост
+    * @param id ID поста
+    */
+    getComment : function(id, callback) {
 
-            db.comments.find({ id: id }, function(err, comment) {
-                if (err) { console.log('==! i-db error: no comment') };
-                callback(comment);
-            })
+        cmnts.find( { _id : id  }, function(err, data){
 
-        },
+            if (err) return;
+            callback(null, data[0]);
+        });
+    },
 
-        postComment: function(comment, callback) {
+    /*
+    * Получает ОП-пост(-ы), в котором(-ых) есть пост с заданным ID
+    * @param id ID поста
+    */
+     getOpComment : function(id) {
 
-            db.comments.insert({
-                id: Math.floor(Math.random() * 10000),
-                date: new Date(),
-                message: comment.message
-            }, function(err) {
-                callback();
-            })
+     },
 
-        }
+    /*
+    * Получает треды
+    * @param board Тег(-и)
+    * @param startId ID ОП-поста, после которого нужно вернуть ОП-посты
+    * @param limit Размер порции выдачи
+    */
+    getBoard : function(board, startId, limit){
+
+    },
+
+    /*
+    * Получает тред
+    * @param id ID ОП-поста
+    * @param startId ID поста-ответа, после которого нужно сформировать выдачу
+    * @param limit Размер порции выдачи
+    */
+    getThred : function(){
+
+    },
+
+    delThred : function(ids){
+
+    },
+
+    delCommentSoft : function(ids, callback){
+
+    },
+
+    delCommentHard : function(ids, callback){
+
+    },
+
+    /*
+    * Возвращает массив ссылок или ссылку на объект(-ы) по массиву их идентификаторов или идентификатору
+    * @param ids Идентификатор(ы) поста(-ов)
+    */
+    _getObjectRefById : function(ids, callback){
 
     }
 
-}
+    /* Увеличивает счетчик постов на единицу и возвращает полученное значение */
+    _incIndex : function(callback){
+
+        /* TODO: если коллекция индексов не создана, то создать,
+         если объект со счетчиком не создан, то создать */
+
+        indxs.update({},{ $inc : { id : 1  } }, function(err){
+
+            if (err) return;
+            indxs.find({}, function(err, data){
+
+                if (err) return;
+                callback(null, data[0].id);
+            });
+        });
+    },
+
+    _dbInit : function(){
+        if (!indxs) {
+            indxs = db.createColletion('indexes');
+            indxs.save( { id : 0 } );
+        }
+    }
+};
