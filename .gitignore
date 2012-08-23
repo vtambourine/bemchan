@@ -6,4 +6,5 @@ pages/*/*.js
 !pages/*/*.bemdecl.js
 pages/*/*.html
 node_modules
+.idea
 www
