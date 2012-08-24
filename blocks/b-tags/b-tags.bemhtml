@@ -1,0 +1,11 @@
+block b-tags {
+
+    elem link {
+    
+        tag: 'a'
+        
+        content: this.ctx.title
+    
+    }
+
+}

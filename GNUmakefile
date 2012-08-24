@@ -48,6 +48,7 @@ BEM_CREATE=$(BEM) create block \
 %.bemhtml.js: %.deps.js
 	$(call BEM_BUILD,bem/techs/bemhtml.js)
 
+.PRECIOUS: %.deps.js
 %.deps.js: %.bemdecl.js
 	$(call BEM_BUILD,deps.js)
 	
