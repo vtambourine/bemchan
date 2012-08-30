@@ -9,3 +9,4 @@ pages/*/*.html
 node_modules
 .idea
 www
+*.esproj
