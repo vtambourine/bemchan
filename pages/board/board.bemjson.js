@@ -14,19 +14,16 @@
                             block: 'b-tags',
                             content: [
                                 {
-                                    elem: 'link',
+                                    block: 'b-link',
+                                    mix: [{ block: 'b-tags', elem: 'link' }],
                                     url: '#',
-                                    title: 'b'
+                                    content: 'b'
                                 },
                                 {
-                                    elem: 'link',
+                                    block: 'b-link',
+                                    mix: [{ block: 'b-tags', elem: 'link' }],
                                     url: '#',
-                                    title: 'pr'
-                                },
-                                {
-                                    elem: 'link',
-                                    url: '#',
-                                    title: 'g'
+                                    content: 'pr'
                                 }
                             ]
                         }
@@ -52,7 +49,7 @@
                                         {
                                             block: 'b-comment',
                                             id: 214,
-                                            content: 'Petroleum11'
+                                            content: 'Petroleum'
                                         }
                                     ]
                                 }

@@ -1,0 +1,15 @@
+.b-tags {    
+    margin-bottom: 12px;
+    
+    text-align: center;
+    font-size: 9pt;
+}
+
+.b-tags__link {
+    padding: 0 12px;
+}
+
+.b-tags__link:before {
+    color: #888;
+    content: '#';
+}
