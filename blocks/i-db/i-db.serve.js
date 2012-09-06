@@ -50,13 +50,28 @@ module.exports = function(serves) {
         */
         getBoard : function(board, startId, limit, callback) {
         
+        	var dummyBoards = [
+                {
+                    id: 10,
+                    message: 'Op Post 10',
+                    children: [11, 12, 13]
+                },
+                {
+                    id: 20,
+                    message: 'Op Post 20',
+                    children: [21, 22]
+                }
+        	];
+        
         	console.log('Trying to get board');
         
         	if (typeof startId === 'function') {
         		callback = startId;
         	}
+        	
+        	//cmnts.find({}, callback);
     
-            callback(null);
+            callback(null, dummyBoards);
     
         },
     
@@ -66,7 +81,18 @@ module.exports = function(serves) {
         * @param startId ID поста-ответа, после которого нужно сформировать выдачу
         * @param limit Размер порции выдачи
         */
-        getThred : function(){
+        getThread : function(id, startId, limit, callback) {
+
+            var dummyThread = [];
+
+            if (typeof startId === 'function') {
+                callback = startId;
+            }
+
+            callback(null, {
+                id: id,
+                message: 'This is post of thrad no ' + id
+            })
     
         },
     

@@ -6,7 +6,7 @@
             mods: {'init': 'auto'}
         },
         { block: 'i-db' },
-        { block: 'b-page' },
+        { block: 'b-thread' },
         { block: 'b-board' }
     ]
 })

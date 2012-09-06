@@ -1,35 +1,37 @@
 module.exports = function(plates) {
 
-    plates['b-board'] = function(ctx, callback) {
+    plates['b-board'] = function(ctx, boards) {
+    
+    	console.log('b-board.plate', 'Recieved data:', boards);
+    
+    	var content = [];
+    	    	
+    	(boards instanceof Array) && boards.forEach(function(board) {
+    		
+    		content.push({
+    			block: 'b-board',
+    			content: (board.children instanceof Array) && board.children.map(function(comment) {
+    				return plates['b-comment'](ctx, comment);
+    			})
+    		});
+    			
+    	});
 
-        ctx.bemjson = ctx.data.map(function(comment) {
-            return [
-                {
-                    block: 'b-comment',
-                    content: [
-                        { elem: 'id', tag: 'h1', content: comment.id },
-                        { elem: 'date', tag: 'p', content: comment.date.toLocaleString() },
-                        { elem: 'content', tag: 'code', content: comment.message }
-                    ]
-                }
+        content.push({
+            block: 'b-cancer',
+            tag: 'form',
+            attrs: {
+                method: 'post'
+            },
+            content: [
+                { tag: 'textarea', attrs: { name: 'message' }, content: 'Show Must Go On' },
+                { tag: 'input', attrs: { type: 'submit' } }
             ]
         });
 
-        ctx.bemjson.push(
-            {
-                block: 'b-cancer',
-                tag: 'form',
-                attrs: {
-                    method: 'post'
-                },
-                content: [
-                    { tag: 'textarea', attrs: { name: 'message' }, content: 'Show Must Go On' },
-                    { tag: 'input', attrs: { type: 'submit' } }
-                ]
-            }
-        )
-
-        callback(null);
+        console.log('b-board.plate', 'Content:', content)
+        
+        return content;
 
     }
 
