@@ -37,7 +37,7 @@ BEM_CREATE=$(BEM) create block \
 	$(call BEM_CREATE,bem-bl/blocks-common/i-bem/bem/techs/html.js)
 	
 .PRECIOUS: %.serve.js
-%.serve.js: %.deps.js %.plate.js
+%.serve.js: %.deps.js %.plate.js %.css %.js
 	$(call BEM_BUILD,bem/techs/serve.js)
 
 .PRECIOUS: %.plate.js

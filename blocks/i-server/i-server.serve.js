@@ -4,6 +4,8 @@ module.exports = function(serves) {
         server = express();
 
     server.use(express.bodyParser());
+    server.use(express.static(__dirname + '/../../'));
+
     server.listen(3001);
 
     server.all('*', function(req, res) {

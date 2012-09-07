@@ -18,7 +18,7 @@ module.exports = function(plates) {
 		return {
 			block: 'b-page',
 			head: [
-			   { elem: 'css', url: 'board.css' }
+			   { elem: 'css', url: 'pages/index/index.css' }
 			],
 			content: [
 			    {
