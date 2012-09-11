@@ -24,7 +24,7 @@ module.exports = function(plates) {
                 method: 'post'
             },
             content: [
-                { tag: 'textarea', attrs: { name: 'message' }, content: 'Show Must Go On' },
+                { tag: 'textarea', attrs: { name: 'text' }, content: 'Show Must Go On' },
                 { tag: 'input', attrs: { type: 'submit' } }
             ]
         });

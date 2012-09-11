@@ -4,7 +4,7 @@ module.exports = function(serves) {
     
     	var url = ctx.originalReq.url,
     		rule;
-    	
+
     	if (rule = url.match(/^\/(\d+)\/?/)) {
     		console.log('Routing to thread number', rule[1]);
     		ctx.route.thread = rule[1];

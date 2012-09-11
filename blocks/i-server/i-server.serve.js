@@ -15,7 +15,8 @@ module.exports = function(serves) {
                 req: {
                     type: 'render',
                     page: 'home',
-                    commentId: 0
+                    commentId: 0,
+                    method: req.route.method
                 },
                 route: {},
                 data: {},

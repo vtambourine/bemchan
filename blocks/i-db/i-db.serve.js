@@ -7,137 +7,90 @@ module.exports = function(serves) {
     serves['i-db'] = {
 
         /*
-        * Создает пост
-        * @param comment Текст поста
-        * @param parents ID поста(-ов), на которые создаваемый пост является ответом
-        */
-        postComment : function(comment, parents, callback) {
-    
-            // Получить ссылки на обЪекты-посты-родители
-    
-            // Увеличить счетчик постов
-    
-            // Создать новый пост в коллекции
-    
-        },
-    
-        /*
-        * Получает пост
-        * @param id ID поста
-        */
-        getComment : function(id, callback) {
-    
-            cmnts.find( { _id : id  }, function(err, data){
-    
-                if (err) return;
-                callback(null, data[0]);
-            });
-        },
-    
-        /*
-        * Получает ОП-пост(-ы), в котором(-ых) есть пост с заданным ID
-        * @param id ID поста
-        */
-        getOpComment : function(id) {
-    
-        },
-    
-        /*
-        * Получает треды
-        * @param board Тег(-и)
-        * @param startId ID ОП-поста, после которого нужно вернуть ОП-посты
-        * @param limit Размер порции выдачи
-        */
-        getBoard : function(board, startId, limit, callback) {
-        
-        	var dummyBoards = [
-                {
-                    id: 10,
-                    message: 'Op Post 10',
-                    children: [11, 12, 13]
-                },
-                {
-                    id: 20,
-                    message: 'Op Post 20',
-                    children: [21, 22]
+         * Создает пост
+         * @param data.text Текст поста
+         * @param data.tags Теги
+         * @param data.threadId ID треда (ОП-поста)
+         * @param data.parents ID поста(-ов), на которые создаваемый пост является ответом
+         */
+        postComment : function(data, callback) {
+
+            this._incIndex(function(err, id) {
+
+                var query = {};
+
+                if (err) {
+                    callback(err, null);
+                } else {
+                    query = {
+                        _id     : id,
+                        text    : data.text,
+                        tags    : data.tags,
+                        date    : new Date(),
+                        parents : data.parents
+                    };
+
+                    data.threadId && (query.threadId = data.threadId);
+
+                    cmnts.insert(query, callback);
                 }
-        	];
-        
-        	console.log('Trying to get board');
-        
-        	if (typeof startId === 'function') {
-        		callback = startId;
-        	}
-        	
-        	//cmnts.find({}, callback);
-    
-            callback(null, dummyBoards);
-    
-        },
-    
-        /*
-        * Получает тред
-        * @param id ID ОП-поста
-        * @param startId ID поста-ответа, после которого нужно сформировать выдачу
-        * @param limit Размер порции выдачи
-        */
-        getThread : function(id, startId, limit, callback) {
-
-            var dummyThread = [];
-
-            if (typeof startId === 'function') {
-                callback = startId;
-            }
-
-            callback(null, {
-                id: id,
-                message: 'This is post of thrad no ' + id
-            })
-    
-        },
-    
-        delThred : function(ids){
-    
-        },
-    
-        delCommentSoft : function(ids, callback){
-    
-        },
-    
-        delCommentHard : function(ids, callback){
-    
-        },
-    
-        /*
-        * Возвращает массив ссылок или ссылку на объект(-ы) по массиву их идентификаторов или идентификатору
-        * @param ids Идентификатор(ы) поста(-ов)
-        */
-        _getObjectRefById : function(ids, callback){
-    
-        },
-    
-        /* Увеличивает счетчик постов на единицу и возвращает полученное значение */
-        _incIndex : function(callback){
-    
-            /* TODO: если коллекция индексов не создана, то создать,
-             если объект со счетчиком не создан, то создать */
-    
-            indxs.update({},{ $inc : { id : 1  } }, function(err){
-    
-                if (err) return;
-                indxs.find({}, function(err, data){
-    
-                    if (err) return;
-                    callback(null, data[0].id);
-                });
             });
         },
-    
-        _dbInit : function(){
-            if (!indxs) {
-                indxs = db.createColletion('indexes');
-                indxs.save( { id : 0 } );
-            }
+
+        /*
+         * Получает тред
+         * @param id ID ОП-поста
+         */
+        getThread : function(id, callback) {
+
+            cmnts.find( { $or: [{ threadId: id }, { _id: id }] } , function(err, data) {
+
+                if (err) {
+                    callback(err, null);
+                } else {
+                    callback(null, data);
+                }
+            });
+        },
+
+        /*
+         * Получает пост(-ы)
+         * @param id ID поста(-ов)
+         */
+        getComment : function(id, callback) {
+
+            var query  = {};
+
+            ( id instanceof Array ) ? query = { _id : { $in : id } } : query._id = id;
+
+            cmnts.find(query, function(err, data) {
+
+                if (err) {
+                    callback(err, null);
+                } else {
+                    callback(null, data[0]);
+                }
+            });
+        },
+
+        /* Увеличивает счетчик постов на единицу и возвращает полученное значение */
+        _incIndex : function(callback) {
+
+            indxs.update({}, { $inc : { id : 1  } }, function(err) {
+
+                if (err) {
+                    callback(err, null);
+                } else {
+                    indxs.find({}, function(err, data) {
+
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback(null, data[0].id);
+                        }
+                    });
+                }
+            });
         }
     }
 };

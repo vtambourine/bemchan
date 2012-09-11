@@ -4,35 +4,53 @@ module.exports = function(serves) {
 
 		var db = ctx.db,
 			tags = ctx.route.boards,
-            boardsLeft, threadsLeft;
-		
-		db.getBoard(tags, function(err, boards) {
+            renderBoard = function() {
 
-			console.log('Boards got:', boards);
-            boardsLeft = boards.length;
-			boards.forEach(function(board) {
+                var boardsLeft, threadsLeft;
 
-                boardsLeft--;
-                threadsLeft = board.children.length;
+                db.getBoard({ tags: tags }, function(err, boards) {
 
-                board.children.forEach(function(id, index, array) {
+                    console.log('Boards got:', boards);
+                    boardsLeft = boards.length;
+                    boards.forEach(function(board) {
 
-                    threadsLeft--;
+                        boardsLeft--;
+                        threadsLeft = board.children.length;
 
-                    db.getThread(id, function(err, thread) {
-                        array[index] = thread;
-                        if (!(boardsLeft || threadsLeft)) {
-                            ctx.data.boards = boards;
-                            console.log('boards', boards)
-                            callback(null);
-                        }
-                    })
+                        board.children.forEach(function(id, index, array) {
+
+                            threadsLeft--;
+
+                            db.getThread(id, function(err, thread) {
+                                array[index] = thread;
+                                if (!(boardsLeft || threadsLeft)) {
+                                    ctx.data.boards = boards;
+                                    console.log('boards', boards)
+                                    callback(null);
+                                }
+                            })
+
+                        });
+
+                    });
 
                 });
 
-            });
+            };
 
-		});
+        if ((ctx.req.method == 'post') && ctx.originalReq.body.message) {
+
+            db.postComment({
+                tags: tags,
+                parents: null,
+                message: ctx.originalReq.body.message
+            }, renderBoard)
+
+        } else {
+
+            renderBoard();
+
+        }
 
     }
 
